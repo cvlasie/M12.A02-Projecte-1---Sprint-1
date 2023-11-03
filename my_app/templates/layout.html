@@ -3,28 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wallapop</title>
-    <!-- Agrega enlaces a tus hojas de estilo de Tailwind CSS y otros archivos CSS aquí -->
+    <title>Wannapop</title>
+    <!-- Add links to your Tailwind CSS and other CSS files here -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
-<body class="bg-gray-100 font-sans">
 
+</head>
+
+<body class="bg-gray-100 font-sans">
     <header class="bg-green-500 p-4">
-        <div class="container mx-auto">
-            <h1 class="text-2xl text-white">Wallapop</h1>
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl text-white">Wannapop</h1>
+            {% if current_user.is_authenticated %}
+                <a href="/logout" class="bg-red-500 hover:bg-red-600 py-2 px-4 rounded-lg text-white text-sm font-semibold transition duration-300 ease-in-out">
+                    Cerrar sesión
+                </a>
+            {% else %}
+                <div class="flex space-x-4">
+                    <a href="/login" class="bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-lg text-white text-sm font-semibold transition duration-300 ease-in-out">
+                        Iniciar sesión
+                    </a>
+                    <a href="/register" class="bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-lg text-white text-sm font-semibold transition duration-300 ease-in-out">
+                        Registrarse
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </header>
-
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="container mx-auto mt-4">
+                <ul class="bg-yellow-100 p-4 border border-yellow-300 rounded text-yellow-800">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    {% endwith %}    
     <main class="container mx-auto mt-4">
         {% block content %}
         {% endblock %}
     </main>
-
-    <footer class="bg-gray-300 p-4 mt-4">
+    <footer class="bg-gray-300 p-4">
         <div class="container mx-auto">
-            <p class="text-center text-gray-600">&copy; 2023 Wallapop. Todos los derechos reservados.</p>
+            <p class="text-center text-gray-600">&copy; 2023 Wannapop. Todos los derechos reservados.</p>
         </div>
     </footer>
-
 </body>
 </html>

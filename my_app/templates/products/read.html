@@ -1,17 +1,19 @@
 {% extends '_template.html' %}
 {% block content %}
 
-<h3>Producte {{ product.id }}</h3>
-<a href="/products/update/{{ product.id }}">Modificar producte</a>
-<br />
-<a href="/products/delete/{{ product.id }}">Esborrar producte</a>
-<ul>
-   <li>Nom: {{ product.title }}</li>
-   <li>Descripció: {{ product.description }}</li>
-   <li>Preu: {{ product.price }}</li>
-   <li>Categoria: {{ category.name }} </li>
-</ul>
-<p><img src="/static/products/{{ product.photo }}" alt="{{ product.title }}" /></p>
-<a href="/products/list">&#x3c;&#x3c; Tornar al llistat de productes</a>
+<div class="max-w-2xl mx-auto mt-8">
+    <h3 class="text-2xl font-semibold">Producte {{ product.id }}</h3>
+    <a href="/products/update/{{ product.id }}" class="text-blue-500 hover:underline">Modificar producte</a>
+    <br>
+    <a href="/products/delete/{{ product.id }}" class="text-red-500 hover:underline">Esborrar producte</a>
+    <ul class="mt-4">
+        <li><span class="font-semibold">Nom:</span> {{ product.title }}</li>
+        <li><span class="font-semibold">Descripció:</span> {{ product.description }}</li>
+        <li><span class="font-semibold">Preu:</span> {{ product.price }}</li>
+        <li><span class="font-semibold">Categoria:</span> {{ category.name }}</li>
+    </ul>
+    <img src="/static/products/{{ product.photo }}" alt="{{ product.title }}" class="mt-4 max-w-full">
+    <a href="/products/list" class="block mt-4 text-blue-500 hover:underline">&lt;&lt; Tornar al llistat de productes</a>
+</div>
 
 {% endblock %}

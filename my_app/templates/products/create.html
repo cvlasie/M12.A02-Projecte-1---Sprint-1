@@ -2,18 +2,45 @@
 {% from "_formhelpers.html" import render_errors %}
 {% block content %}
 
-<h3>Nou producte</h3>
+<div class="max-w-md mx-auto mt-8">
+    <h3 class="text-2xl font-semibold mb-4">Nou producte</h3>
 
-<form action="/products/create" method="POST" enctype="multipart/form-data">
-   {{ form.csrf_token }}
-   <p>{{ form.title.label }}: {{ form.title() }}</p>
-   <p>{{ form.description.label }}: {{ form.description() }}</p>
-   <p>{{ form.photo_file.label }}: {{ form.photo_file() }}</p>
-   <p>{{ form.price.label }}: {{ form.price() }}</p>
-   <p>{{ form.category_id.label }}: {{ form.category_id() }}</p>
-   <p>{{ form.submit(value="CREAR") }}</p>
-   {{ render_errors(form) }}
-</form>
-<a href="/products/list">&#x3c;&#x3c; Tornar al llistat de productes</a>
+    <form action="/products/create" method="POST" enctype="multipart/form-data" class="space-y-4">
+        {{ form.csrf_token }}
+
+        <div>
+            <label for="title" class="block text-gray-600">Títol</label>
+            {{ form.title(class="form-input w-full") }}
+        </div>
+
+        <div>
+            <label for="description" class="block text-gray-600">Descripció</label>
+            {{ form.description(class="form-input w-full") }}
+        </div>
+
+        <div>
+            <label for="photo_file" class="block text-gray-600">Fitxer de la foto</label>
+            {{ form.photo_file(class="form-input w-full") }}
+        </div>
+
+        <div>
+            <label for="price" class="block text-gray-600">Preu</label>
+            {{ form.price(class="form-input w-full") }}
+        </div>
+
+        <div>
+            <label for="category_id" class="block text-gray-600">Categoria</label>
+            {{ form.category_id(class="form-select w-full") }}
+        </div>
+
+        <div>
+            <button type="submit" class="bg-blue-500 text-white rounded-lg py-2 px-4 hover:bg-blue-600">CREAR</button>
+        </div>
+
+        {{ render_errors(form) }}
+    </form>
+
+    <a href="/products/list" class="mt-4 block text-blue-500 hover:underline">&lt;&lt; Tornar al llistat de productes</a>
+</div>
 
 {% endblock %}

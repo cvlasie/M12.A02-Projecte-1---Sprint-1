@@ -26,6 +26,13 @@ Per desactivar l'entorn:
 
     deactivate
 
+### Instalar
+
+pip install Flask-Login
+pip install Python-dotenv
+pip install email-validator
+
+
 ### Base de dades
 
 La base de dades [SQLite](https://www.sqlite.org) s'ha de dir `database.db`. S'ha creat amb l'script [database.sql](./database.sql).

@@ -1,20 +1,39 @@
 {% extends '_template.html' %}
 {% from "_formhelpers.html" import render_errors %}
 {% block content %}
+  <div class="bg-gray-100 p-6 rounded-lg">
+    <h3 class="text-2xl font-bold mb-4">Producte {{ product_id }}</h3>
 
-<h3>Producte {{ product_id }}</h3>
+    <form action="/products/update/{{ product_id }}" method="POST" enctype="multipart/form-data" class="mb-4">
+      {{ form.csrf_token }}
+      <div class="mb-4">
+        <label for="title" class="block text-sm font-medium text-gray-700">Title:</label>
+        {{ form.title() }}
+      </div>
+      <div class="mb-4">
+        <label for="description" class="block text-sm font-medium text-gray-700">Description:</label>
+        {{ form.description() }}
+      </div>
+      <div class="mb-4">
+        <label for="photo_file" class="block text-sm font-medium text-gray-700">Photo File:</label>
+        {{ form.photo_file() }}
+      </div>
+      <div class="mb-4">
+        <label for="price" class="block text-sm font-medium text-gray-700">Price:</label>
+        {{ form.price() }}
+      </div>
+      <div class="mb-4">
+        <label for="category_id" class="block text-sm font-medium text-gray-700">Category ID:</label>
+        {{ form.category_id() }}
+      </div>
+      <div>
+        {{ form.submit(value="MODIFICAR", class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700") }}
+      </div>
+      {{ render_errors(form) }}
+    </form>
 
-<form action="/products/update/{{ product_id }}" method="POST" enctype="multipart/form-data">
-   {{ form.csrf_token }}
-   <p>{{ form.title.label }}: {{ form.title() }}</p>
-   <p>{{ form.description.label }}: {{ form.description() }}</p>
-   <p>{{ form.photo_file.label }}: {{ form.photo_file() }}</p>
-   <p>{{ form.price.label }}: {{ form.price() }}</p>
-   <p>{{ form.category_id.label }}: {{ form.category_id() }}</p>
-   <p>{{ form.submit(value="MODIFICAR") }}</p>
-   {{ render_errors(form) }}
-</form>
-
-<a href="/products/list">&#x3c;&#x3c; Tornar al llistat de productes</a>
-
+    <a href="/products/list" class="block text-blue-500 hover:underline">
+      &lt;&lt; Tornar al llistat de productes
+    </a>
+  </div>
 {% endblock %}

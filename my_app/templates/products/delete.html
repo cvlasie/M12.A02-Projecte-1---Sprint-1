@@ -2,19 +2,30 @@
 {% from "_formhelpers.html" import render_errors %}
 {% block content %}
 
-<h3>Producte {{ product.id }}</h3>
-<ul>
-    <li>Nom: {{ product.title }}</li>
-    <li>Descripció: {{ product.description }}</li>
-    <li>Preu: {{ product.price }}</li>
-</ul>
-<p><img src="/static/products/{{ product.photo }}" alt="{{ product.title }}" /></p>
-<p>Confirma que vols esborrar aquest product:</p>
-<form action="/products/delete/{{ product.id }}" method="POST">
-    {{ form.csrf_token }}
-    <p>{{ form.submit(value="ESBORRAR") }}</p>
-    {{ render_errors(form) }}
-</form>
-<a href="/products/list">&#x3c;&#x3c; Tornar al llistat de productes</a>
+<div class="max-w-md mx-auto mt-8">
+    <h3 class="text-2xl font-semibold mb-4">Producte {{ product.id }}</h3>
+
+    <ul class="mb-4">
+        <li><strong>Nom:</strong> {{ product.title }}</li>
+        <li><strong>Descripció:</strong> {{ product.description }}</li>
+        <li><strong>Preu:</strong> {{ product.price }}</li>
+    </ul>
+
+    <img src="/static/products/{{ product.photo }}" alt="{{ product.title }}" class="mb-4" />
+
+    <p class="mb-4">Confirma que vols esborrar aquest product:</p>
+
+    <form action="/products/delete/{{ product.id }}" method="POST" class="space-y-4">
+        {{ form.csrf_token }}
+
+        <div>
+            <button type="submit" class="bg-red-500 text-white rounded-lg py-2 px-4 hover:bg-red-600">ESBORRAR</button>
+        </div>
+
+        {{ render_errors(form) }}
+    </form>
+
+    <a href="/products/list" class="mt-4 block text-blue-500 hover:underline">&lt;&lt; Tornar al llistat de productes</a>
+</div>
 
 {% endblock %}

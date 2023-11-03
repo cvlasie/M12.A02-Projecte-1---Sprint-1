@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
+from flask_login import current_user, login_required
 from .models import Product, Category
 from .forms import ProductForm, DeleteForm
 from werkzeug.utils import secure_filename
@@ -22,9 +23,9 @@ def product_list():
     
     return render_template('products/list.html', products_with_category = products_with_category)
 
-@main_bp.route('/products/create', methods = ['POST', 'GET'])
-def product_create(): 
-
+@main_bp.route('/products/create', methods=['POST', 'GET'])
+@login_required  # Aplica el decorador @login_required para restringir la creación de productos a usuarios autenticados
+def product_create():
     # select que retorna una llista de resultats
     categories = db.session.query(Category).order_by(Category.id.asc()).all()
 
@@ -32,9 +33,11 @@ def product_create():
     form = ProductForm()
     form.category_id.choices = [(category.id, category.name) for category in categories]
 
-    if form.validate_on_submit(): # si s'ha fet submit al formulari
+    if form.validate_on_submit():  # si s'ha fet submit al formulari
         new_product = Product()
-        new_product.seller_id = None # en un el futur tindrà l'id de l'usuari autenticat
+        
+        # Utiliza current_user.id para establecer el seller_id como el ID del usuario autenticado
+        new_product.seller_id = current_user.id
 
         # dades del formulari a l'objecte product
         form.populate_obj(new_product)
@@ -50,11 +53,10 @@ def product_create():
         db.session.add(new_product)
         db.session.commit()
 
-        # https://en.wikipedia.org/wiki/Post/Redirect/Get
         flash("Nou producte creat", "success")
         return redirect(url_for('main_bp.product_list'))
-    else: # GET
-        return render_template('products/create.html', form = form)
+    else:  # GET
+        return render_template('products/create.html', form=form)
 
 @main_bp.route('/products/read/<int:product_id>')
 def product_read(product_id):
@@ -64,6 +66,7 @@ def product_read(product_id):
     return render_template('products/read.html', product = product, category = category)
 
 @main_bp.route('/products/update/<int:product_id>',methods = ['POST', 'GET'])
+@login_required  # Aplica el decorador @login_required para restringir la update de productos a usuarios autenticados
 def product_update(product_id):
     # select amb 1 resultat
     product = db.session.query(Product).filter(Product.id == product_id).one()
@@ -88,13 +91,12 @@ def product_update(product_id):
         db.session.add(product)
         db.session.commit()
 
-        # https://en.wikipedia.org/wiki/Post/Redirect/Get
-        flash("Producte actualitzat", "success")
         return redirect(url_for('main_bp.product_read', product_id = product_id))
     else: # GET
         return render_template('products/update.html', product_id = product_id, form = form)
 
 @main_bp.route('/products/delete/<int:product_id>',methods = ['GET', 'POST'])
+@login_required  # Aplica el decorador @login_required para restringir la delete de productos a usuarios autenticados
 def product_delete(product_id):
     # select amb 1 resultat
     product = db.session.query(Product).filter(Product.id == product_id).one()
@@ -105,7 +107,6 @@ def product_delete(product_id):
         db.session.delete(product)
         db.session.commit()
 
-        flash("Producte esborrat", "success")
         return redirect(url_for('main_bp.product_list'))
     else: # GET
         return render_template('products/delete.html', form = form, product = product)
