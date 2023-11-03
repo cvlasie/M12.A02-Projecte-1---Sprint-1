@@ -7,16 +7,10 @@ db_manager = SQLAlchemy()
 def create_app():
     # Construct the core app object
     app = Flask(__name__)
-    app.config.from_pyfile("config.py")
-    # Secret key
-    app.config["SECRET_KEY"]
 
-    # paràmetre que farà servir SQLAlchemy per a connectar-se
-    app.config["SQLALCHEMY_DATABASE_URI"]
-    # mostre als logs les ordres SQL que s'executen
-    app.config["SQLALCHEMY_ECHO"]
+    app.config.from_object("config.Config")
 
-    # Inicialitza els plugins
+    # Inicialitza SQLAlchemy
     db_manager.init_app(app)
 
     with app.app_context():
