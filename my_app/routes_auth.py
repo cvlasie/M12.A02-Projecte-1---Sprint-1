@@ -64,7 +64,7 @@ def register():
         if existing_user:
             flash("El nombre de usuario ya está en uso. Por favor, elige otro.", "danger")  # Mensaje de error
         else:
-            new_user = User(name=name, email=email, password=generate_password_hash(password, method="sha256"))
+            new_user = User(name=name, email=email, password=generate_password_hash(password, method="sha256"), role="wanner")
             db.session.add(new_user)
             db.session.commit()
             flash("Te has registrado con éxito.", "success")  # Mensaje de éxito
