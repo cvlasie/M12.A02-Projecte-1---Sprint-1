@@ -1,4 +1,4 @@
-# 2daw-m12-p1-s0-solution
+# 2.A02-Projecte-1-Sprint-1
 
 Proposta de solució de l'sprint 0 del projecte 1 dins del mòdul de projecte (M12) de 2n de DAW.
 
