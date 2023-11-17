@@ -8,6 +8,7 @@ class Role(str, Enum):
     editor = "editor"
     viewer = "viewer"
     moderator = "moderator"
+    admin = "admin"
 
 class Action(str, Enum):
     edit = "create, update and delete"
@@ -17,14 +18,18 @@ class Action(str, Enum):
 __editor_role_need = ActionNeed(Role.editor)
 __viewer_role_need = ActionNeed(Role.viewer)
 __moderator_role_need = ActionNeed(Role.moderator)
+__admin_role_need = ActionNeed(Role.admin)
+
 
 __edit_action_need = ActionNeed(Action.edit)
 __view_action_need = ActionNeed(Action.view)
-require_moderator_role = Permission(__moderator_role_need, __edit_action_need, __view_action_need)
+require_admin_or_moderator_role = Permission(__admin_role_need, __moderator_role_need, __edit_action_need, __view_action_need)
+
 
 # Permissions
 require_editor_role = Permission(__editor_role_need)
 require_viewer_role = Permission(__viewer_role_need)
+require_admin_role = Permission(__admin_role_need)
 
 require_edit_permission = Permission(__edit_action_need)
 require_view_permission = Permission(__view_action_need)
@@ -46,6 +51,10 @@ def on_identity_loaded(sender, identity):
             identity.provides.add(__view_action_need)
         elif current_user.role == Role.moderator:
             identity.provides.add(__moderator_role_need)
+            identity.provides.add(__edit_action_need)
+            identity.provides.add(__view_action_need)
+        elif current_user.role == Role.admin:
+            identity.provides.add(__admin_role_need)
             identity.provides.add(__edit_action_need)
             identity.provides.add(__view_action_need)
         else:
