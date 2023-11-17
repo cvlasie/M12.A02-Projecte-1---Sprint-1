@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
 from .models import User
-from .helper_role import require_admin_or_moderator_role, require_admin_role   
+from .helper_role import require_editor_role, require_admin_or_moderator_role, require_admin_role   # Assegura't d'importar el nou permís
 from . import db_manager as db
 
 # Blueprint
