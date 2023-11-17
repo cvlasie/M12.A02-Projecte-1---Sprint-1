@@ -7,14 +7,17 @@ from enum import Enum
 class Role(str, Enum):
     admin = "admin"
     wanner = "wanner"
+    moderator = "moderator"
 
 # Needs
 __admin_role_need = RoleNeed(Role.admin)
 __wanner_role_need = RoleNeed(Role.wanner)
+__moderator_role_need = RoleNeed(Role.moderator)
 
 # Permissions
 require_admin_role = Permission(__admin_role_need)
 require_wanner_role = Permission(__wanner_role_need)
+require_moderator_role = Permission(__moderator_role_need)
 
 @identity_loaded.connect
 def on_identity_loaded(sender, identity):
@@ -24,11 +27,11 @@ def on_identity_loaded(sender, identity):
 def set_user_role(identity):
     if hasattr(current_user, 'role'):
         if current_user.role == Role.admin:
-            # Role needs
             identity.provides.add(__admin_role_need)
         elif current_user.role == Role.wanner:
-            # Role needs
             identity.provides.add(__wanner_role_need)
+        elif current_user.role == Role.moderator:
+            identity.provides.add(__moderator_role_need)
         else:
             current_app.logger.debug("Unknown role")
 
