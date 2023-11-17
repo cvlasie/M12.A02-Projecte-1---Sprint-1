@@ -77,7 +77,7 @@ def register():
 
     return render_template('register.html', form=form)
 
-@app.route('/profile')
+@auth_bp.route('/profile')
 @login_required
 def profile():
     # Suposant que 'current_user' és un objecte usuari amb atributs com 'name', 'email', i 'role'
