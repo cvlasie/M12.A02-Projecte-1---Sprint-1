@@ -68,20 +68,25 @@ def product_read(product_id):
     return render_template('products/read.html', product=product, category=category, require_admin_role=require_admin_role, require_wanner_role=require_wanner_role)
 
 
-@main_bp.route('/products/update/<int:product_id>',methods = ['POST', 'GET'])
+@main_bp.route('/products/update/<int:product_id>', methods=['POST', 'GET'])
 @login_required
 def product_update(product_id):
     # select amb 1 resultat
     product = db.session.query(Product).filter(Product.id == product_id).one()
 
+    # Verificar si el usuario actual es el propietario del producto
+    if current_user.id != product.seller_id:
+        flash("No tienes permisos para editar este producto", "danger")
+        return redirect(url_for('main_bp.product_list'))
+
     # select que retorna una llista de resultats
     categories = db.session.query(Category).order_by(Category.id.asc()).all()
 
     # carrego el formulari amb l'objecte products
-    form = ProductForm(obj = product)
+    form = ProductForm(obj=product)
     form.category_id.choices = [(category.id, category.name) for category in categories]
 
-    if form.validate_on_submit(): # si s'ha fet submit al formulari
+    if form.validate_on_submit():  # si s'ha fet submit al formulari
         # dades del formulari a l'objecte product
         form.populate_obj(product)
 
@@ -94,25 +99,30 @@ def product_update(product_id):
         db.session.add(product)
         db.session.commit()
 
-        return redirect(url_for('main_bp.product_read', product_id = product_id))
-    else: # GET
-        return render_template('products/update.html', product_id = product_id, form = form)
+        return redirect(url_for('main_bp.product_read', product_id=product_id))
+    else:  # GET
+        return render_template('products/update.html', product_id=product_id, form=form)
 
-@main_bp.route('/products/delete/<int:product_id>',methods = ['GET', 'POST'])
+@main_bp.route('/products/delete/<int:product_id>', methods=['GET', 'POST'])
 @login_required
 def product_delete(product_id):
     # select amb 1 resultat
     product = db.session.query(Product).filter(Product.id == product_id).one()
 
+    # Verificar si el usuario actual es el propietario del producto
+    if current_user.id != product.seller_id:
+        flash("No tienes permisos para borrar este producto", "danger")
+        return redirect(url_for('main_bp.product_list'))
+
     form = DeleteForm()
-    if form.validate_on_submit(): # si s'ha fet submit al formulari
+    if form.validate_on_submit():  # si s'ha fet submit al formulari
         # delete!
         db.session.delete(product)
         db.session.commit()
 
         return redirect(url_for('main_bp.product_list'))
-    else: # GET
-        return render_template('products/delete.html', form = form, product = product)
+    else:  # GET
+        return render_template('products/delete.html', form=form, product=product)
 
 
 __uploads_folder = os.path.abspath(os.path.dirname(__file__)) + "/static/products/"
