@@ -7,7 +7,7 @@ from enum import Enum
 class Role(str, Enum):
     editor = "editor"
     viewer = "viewer"
-    moderator = "moderator"  # Afegir aquesta línia
+    moderator = "moderator"
 
 class Action(str, Enum):
     edit = "create, update and delete"
