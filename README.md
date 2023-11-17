@@ -28,9 +28,9 @@ Per desactivar l'entorn:
 
 ### Instalar
 
-pip install Flask-Login
-pip install Python-dotenv
-pip install email-validator
+    pip install Flask-Login
+    pip install Python-dotenv
+    pip install email-validator
 
 
 ### Base de dades

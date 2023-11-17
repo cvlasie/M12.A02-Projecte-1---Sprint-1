@@ -76,3 +76,14 @@ def register():
             return redirect(url_for("auth_bp.login"))
 
     return render_template('register.html', form=form)
+
+@auth_bp.route('/profile')
+@login_required
+def profile():
+    # Suposant que 'current_user' és un objecte usuari amb atributs com 'name', 'email', i 'role'
+    user_info = {
+        "name": current_user.name,
+        "email": current_user.email,
+        "role": current_user.role
+    }
+    return render_template('profile.html', user_info=user_info)
