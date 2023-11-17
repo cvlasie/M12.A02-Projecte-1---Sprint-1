@@ -4,6 +4,7 @@ from flask import flash
 from . import login_manager
 from .models import User
 from .forms import LoginForm, RegisterForm
+from .helper_role import notify_identity_changed
 from . import db_manager as db
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -25,6 +26,10 @@ def login():
         user = load_user(email)
         if user and check_password_hash(user.password, plain_text_password):
             login_user(user)
+
+            # aquí s'actualitzen els rols que té l'usuari
+            notify_identity_changed()
+            
             flash("Inicio de sesión exitoso.", "success")
             return redirect(url_for("main_bp.init"))
         else:
