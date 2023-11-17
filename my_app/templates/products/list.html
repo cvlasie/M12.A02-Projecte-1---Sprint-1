@@ -4,7 +4,9 @@
 <div class="mt-8">
     <h2 class="mb-4">Productes</h2>
     
-    <a href="/products/create" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 transition duration-300 rounded mb-4">Crear un nou producte</a>
+    {% if current_user and current_user.is_authenticated %}
+        <a href="/products/create" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 transition duration-300 rounded mb-4">Crear un nou producte</a>
+    {% endif %}
 
     <table>
         <tr>

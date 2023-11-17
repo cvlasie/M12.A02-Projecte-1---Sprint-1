@@ -1,53 +1,42 @@
 from flask import current_app
 from flask_login import current_user
-from flask_principal import identity_loaded, identity_changed, ActionNeed, Permission, Identity, AnonymousIdentity
+from flask_principal import identity_loaded, identity_changed, RoleNeed, Permission, Identity, AnonymousIdentity
 from enum import Enum
 
-# Custom roles and actions
+# Custom roles
 class Role(str, Enum):
-    editor = "editor"
-    viewer = "viewer"
-
-class Action(str, Enum):
-    edit = "create, update and delete"
-    view = "list and read"
+    admin = "admin"
+    wanner = "wanner"
 
 # Needs
-__editor_role_need = ActionNeed(Role.editor)
-__viewer_role_need = ActionNeed(Role.viewer)
-
-__edit_action_need = ActionNeed(Action.edit)
-__view_action_need = ActionNeed(Action.view)
+__admin_role_need = RoleNeed(Role.admin)
+__wanner_role_need = RoleNeed(Role.wanner)
 
 # Permissions
-require_editor_role = Permission(__editor_role_need)
-require_viewer_role = Permission(__viewer_role_need)
-
-require_edit_permission = Permission(__edit_action_need)
-require_view_permission = Permission(__view_action_need)
+require_admin_role = Permission(__admin_role_need)
+require_wanner_role = Permission(__wanner_role_need)
 
 @identity_loaded.connect
 def on_identity_loaded(sender, identity):
     identity.user = current_user
+    set_user_role(identity)
+
+def set_user_role(identity):
     if hasattr(current_user, 'role'):
-        if current_user.role == Role.editor:
+        if current_user.role == Role.admin:
             # Role needs
-            identity.provides.add(__editor_role_need)
-            # Action needs
-            identity.provides.add(__edit_action_need)
-            identity.provides.add(__view_action_need)
-        elif current_user.role == Role.viewer:
+            identity.provides.add(__admin_role_need)
+        elif current_user.role == Role.wanner:
             # Role needs
-            identity.provides.add(__viewer_role_need)
-            # Action needs
-            identity.provides.add(__view_action_need)
+            identity.provides.add(__wanner_role_need)
         else:
-            current_app.logger.debug("Unkown role")
+            current_app.logger.debug("Unknown role")
 
 def notify_identity_changed():
     if hasattr(current_user, 'email'):
         identity = Identity(current_user.email)
     else:
         identity = AnonymousIdentity()
-    
-    identity_changed.send(current_app._get_current_object(), identity = identity)
+
+    set_user_role(identity)
+    identity_changed.send(current_app._get_current_object(), identity=identity)
