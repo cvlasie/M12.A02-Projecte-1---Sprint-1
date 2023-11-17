@@ -7,6 +7,7 @@ from enum import Enum
 class Role(str, Enum):
     editor = "editor"
     viewer = "viewer"
+    moderator = "moderator"  # Afegir aquesta línia
 
 class Action(str, Enum):
     edit = "create, update and delete"
@@ -15,9 +16,11 @@ class Action(str, Enum):
 # Needs
 __editor_role_need = ActionNeed(Role.editor)
 __viewer_role_need = ActionNeed(Role.viewer)
+__moderator_role_need = ActionNeed(Role.moderator)
 
 __edit_action_need = ActionNeed(Action.edit)
 __view_action_need = ActionNeed(Action.view)
+require_moderator_role = Permission(__moderator_role_need, __edit_action_need, __view_action_need)
 
 # Permissions
 require_editor_role = Permission(__editor_role_need)
@@ -40,6 +43,10 @@ def on_identity_loaded(sender, identity):
             # Role needs
             identity.provides.add(__viewer_role_need)
             # Action needs
+            identity.provides.add(__view_action_need)
+        elif current_user.role == Role.moderator:
+            identity.provides.add(__moderator_role_need)
+            identity.provides.add(__edit_action_need)
             identity.provides.add(__view_action_need)
         else:
             current_app.logger.debug("Unkown role")
