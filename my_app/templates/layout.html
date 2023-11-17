@@ -23,7 +23,9 @@
 <body class="bg-gray-100 font-sans">
     <header class="bg-green-500 p-4">
         <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-2xl text-white">Wannapop</h1>
+            <!-- Enlace "Wannapop" -->
+            <a href="/" class="text-2xl text-white">Wannapop</a>
+
             {% if current_user.is_authenticated %}
                 <a href="/logout" class="bg-red-500 hover:bg-red-600 py-2 px-4 rounded-lg text-white text-sm font-semibold transition duration-300 ease-in-out">
                     Cerrar sesión
