@@ -43,3 +43,4 @@ def notify_identity_changed():
 
     set_user_role(identity)
     identity_changed.send(current_app._get_current_object(), identity=identity)
+    
