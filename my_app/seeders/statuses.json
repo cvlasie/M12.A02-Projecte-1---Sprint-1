@@ -1,0 +1,58 @@
+[
+    {
+        "model": "Status",
+        "fields": {
+            "name": "Nou",
+            "slug": "nou"
+        }
+    },
+    {
+        "model": "Status",
+        "fields": {
+            "name": "Com nou",
+            "slug": "com-nou"
+        }
+    },
+    {
+        "model": "Status",
+        "fields": {
+            "name": "Utilitzat",
+            "slug": "utilitzat"
+        }
+    },
+    {
+        "model": "Status",
+        "fields": {
+            "name": "Renovat",
+            "slug": "renovat"
+        }
+    },
+    {
+        "model": "Status",
+        "fields": {
+            "name": "En reparació",
+            "slug": "en-reparacio"
+        }
+    },
+    {
+        "model": "Status",
+        "fields": {
+            "name": "Fora de servei",
+            "slug": "fora-de-servei"
+        }
+    },
+    {
+        "model": "Status",
+        "fields": {
+            "name": "Reservat",
+            "slug": "reservat"
+        }
+    },
+    {
+        "model": "Status",
+        "fields": {
+            "name": "Venut",
+            "slug": "venut"
+        }
+    }
+]

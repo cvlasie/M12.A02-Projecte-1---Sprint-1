@@ -49,6 +49,7 @@ pip install email-validator
 pip install flask-principal
 pip install flask_wtf
 pip install sqlalchemyseed
+pip install sqlalchemy-seed
 
 ### Base de dades
 

@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from flask_principal import Principal
 from .helper_mail import MailManager
 
+
 db_manager = SQLAlchemy()
 login_manager = LoginManager()
 principal_manager = Principal()

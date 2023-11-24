@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template
 from flask_login import login_required, current_user
-from .models import User
+from .models import User, Category
 from .helper_role import require_editor_role, require_admin_or_moderator_role, require_admin_role   # Assegura't d'importar el nou permís
 from . import db_manager as db
 
@@ -22,3 +22,11 @@ def admin_index():
 def admin_users():
     users = db.session.query(User).all()
     return render_template('users_list.html', users=users, show_users_button=current_user.role == 'admin')
+
+@admin_bp.route('/admin/statuses')
+@login_required
+@require_admin_role.require(http_exception=403)  # Només permetre accés a "admin"
+def admin_statuses():
+    categories = db.session.query(Category).all()
+    return render_template('statuses_list.html', categories=categories)
+

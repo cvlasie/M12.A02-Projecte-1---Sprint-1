@@ -13,6 +13,8 @@ class Product(db.Model):
     seller_id = db.Column(db.Integer)  # Opcional: db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     created = db.Column(db.DateTime, server_default=func.now())
     updated = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+    status_id = db.Column(db.Integer, db.ForeignKey('statuses.id'))
+
 
 class Category(db.Model):
     __tablename__ = "categories"
@@ -33,3 +35,11 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return self.email
+
+# Taula statuses
+class Status(db.Model):
+    __tablename__ = "statuses"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    slug = db.Column(db.String, nullable=False)
+    products = db.relationship('Product', backref='status', lazy=True)

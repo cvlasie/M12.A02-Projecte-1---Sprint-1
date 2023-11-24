@@ -1,0 +1,12 @@
+{% extends '_template.html' %}
+
+{% block content %}
+  <h1>Statuses</h1>
+  <ul>
+    {% for category in categories %}
+      <li>{{ category.name }}</li>
+    {% else %}
+      <p>No statuses found.</p>
+    {% endfor %}
+  </ul>
+{% endblock %}
