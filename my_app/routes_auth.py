@@ -1,9 +1,9 @@
-from flask import Blueprint, redirect, render_template, url_for, flash
+from flask import Blueprint, redirect, render_template, url_for, flash, request
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import login_manager
 from .models import User
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, ResendVerificationForm
 from .helper_role import notify_identity_changed
 from . import db_manager as db
 from . import mail_manager as mail
@@ -111,3 +111,21 @@ def verify_user(name, email_token):
     else:
         flash('Error en la verificació del correu electrònic. Verifica l\'enllaç o torna a registrar-te.', 'error')
         return redirect(url_for('auth_bp.login'))
+
+@auth_bp.route('/resend', methods=['GET', 'POST'])
+def resend_verification():
+    form = ResendVerificationForm()
+
+    if form.validate_on_submit():
+        email = form.email.data
+        user = db.session.query(User).filter_by(email=email).first()
+
+        if user and not user.verified:
+            # Si el usuario existe y no está verificado, reenviar el correo de verificación
+            mail.send_verification_msg(user.name, user.email, user.email_token)
+            flash("Se ha reenviado el correo de verificación.", "success")
+            return redirect(url_for('auth_bp.login'))
+        else:
+            flash("El usuario no existe o ya está verificado.", "danger")
+
+    return render_template('resend_verification.html', form=form)

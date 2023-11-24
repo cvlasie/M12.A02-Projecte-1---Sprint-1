@@ -45,3 +45,7 @@ class LoginForm(FlaskForm):
         validators=[ DataRequired()]
     )
     submit = SubmitField()
+
+class ResendVerificationForm(FlaskForm):
+    email = StringField('Email', validators=[InputRequired(), Email()])
+    submit = SubmitField('Reenviar Verificación')
