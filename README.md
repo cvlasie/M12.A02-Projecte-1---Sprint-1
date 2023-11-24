@@ -13,31 +13,31 @@ Proposta de solució de l'sprint 0 del projecte 1 dins del mòdul de projecte (M
 Crea l'entorn:
 
 
-   python3 -m venv .venv
+    python3 -m venv .venv
 
 
 Activa'l:
 
 
-   source .venv/bin/activate
+    source .venv/bin/activate
 
 
 Instal·la el requisits:
 
 
-   pip install -r requirements.txt
+    pip install -r requirements.txt
 
 
 Per a generar el fitxer de requiriments:
 
 
-   pip freeze > requirements.txt
+    pip freeze > requirements.txt
 
 
 Per desactivar l'entorn:
 
 
-   deactivate
+    deactivate
 
 
 ### Instalar
