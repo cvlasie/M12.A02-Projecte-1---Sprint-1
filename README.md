@@ -60,7 +60,7 @@ La base de dades [SQLite](https://www.sqlite.org) s'ha de dir `database.db`. S'h
 Executa:
 
 
-   flask --debug run
+   flask run --debug
 
 
 I obre un navegador a l'adreça: [http://127.0.0.1:5000](http://127.0.0.1:5000).
