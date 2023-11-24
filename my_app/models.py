@@ -2,7 +2,6 @@ from . import db_manager as db
 from sqlalchemy.sql import func
 from flask_login import UserMixin
 
-
 class Product(db.Model):
     __tablename__ = "products"
     id = db.Column(db.Integer, primary_key=True)
@@ -11,7 +10,7 @@ class Product(db.Model):
     photo = db.Column(db.String, nullable=False)
     price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=False)
-    seller_id = db.Column(db.Integer) #db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    seller_id = db.Column(db.Integer)  # Opcional: db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     created = db.Column(db.DateTime, server_default=func.now())
     updated = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
 
@@ -29,6 +28,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
     role = db.Column(db.String(50), nullable=False, default="wanner")
+    email_token = db.Column(db.String(20), nullable=True)
+    verified = db.Column(db.Integer, default=0)
 
     def get_id(self):
         return self.email

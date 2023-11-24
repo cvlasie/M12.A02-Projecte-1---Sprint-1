@@ -1,12 +1,13 @@
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, redirect, render_template, url_for, flash
 from flask_login import current_user, login_user, login_required, logout_user
-from flask import flash
+from werkzeug.security import generate_password_hash, check_password_hash
 from . import login_manager
 from .models import User
 from .forms import LoginForm, RegisterForm
 from .helper_role import notify_identity_changed
 from . import db_manager as db
-from werkzeug.security import generate_password_hash, check_password_hash
+from . import mail_manager as mail
+import secrets
 
 # Blueprint
 auth_bp = Blueprint(
@@ -29,7 +30,7 @@ def login():
 
             # aquí s'actualitzen els rols que té l'usuari
             notify_identity_changed()
-            
+
             flash("Inicio de sesión exitoso.", "success")
             return redirect(url_for("main_bp.init"))
         else:
@@ -55,7 +56,6 @@ def logout():
     logout_user()
     return redirect(url_for("auth_bp.login"))
 
-
 @auth_bp.route("/register", methods=["GET", "POST"])
 def register():
     form = RegisterForm()
@@ -65,14 +65,23 @@ def register():
         email = form.email.data
         password = form.password.data
 
-        existing_user = db.session.query(User).filter_by(name=name).first()
+        # Verificar si el correo electrónico ya está en uso
+        existing_user = db.session.query(User).filter_by(email=email).first()
         if existing_user:
-            flash("El nombre de usuario ya está en uso. Por favor, elige otro.", "danger")  # Mensaje de error
+            flash("El correo electrónico ya está en uso. Por favor, utiliza otro.", "danger")  # Mensaje de error
         else:
-            new_user = User(name=name, email=email, password=generate_password_hash(password, method="sha256"), role="wanner")
+            # Generar un token para la verificación del correo electrónico
+            token = secrets.token_urlsafe(20)
+
+            # Crear un nuevo usuario en la base de datos con el token y sin verificar
+            new_user = User(name=name, email=email, password=generate_password_hash(password, method="sha256"), role="wanner", email_token=token, verified=False)
             db.session.add(new_user)
             db.session.commit()
-            flash("Te has registrado con éxito.", "success")  # Mensaje de éxito
+
+            # Enviar correo de bienvenida con el enlace de verificación al nuevo usuario
+            mail.send_verification_msg(name, email, token)
+
+            flash("Te has registrado con éxito. Se ha enviado un correo electrónico de verificación.", "success")  # Mensaje de éxito
             return redirect(url_for("auth_bp.login"))
 
     return render_template('register.html', form=form)
@@ -87,3 +96,18 @@ def profile():
         "role": current_user.role
     }
     return render_template('profile.html', user_info=user_info)
+
+@auth_bp.route('/verify/<name>/<email_token>')
+def verify_user(name, email_token):
+    # Buscar el usuario en la base de datos por nombre y token
+    user = User.query.filter_by(name=name, email_token=email_token, verified=False).first()
+
+    if user:
+        # Actualizar el campo 'verified' a True
+        user.verified = True
+        db.session.commit()
+        flash('El teu correu electrònic s\'ha verificat correctament. Pots iniciar la sessió ara.', 'success')
+        return redirect(url_for('auth_bp.login'))
+    else:
+        flash('Error en la verificació del correu electrònic. Verifica l\'enllaç o torna a registrar-te.', 'error')
+        return redirect(url_for('auth_bp.login'))
