@@ -1,6 +1,6 @@
 from flask import current_app
 from flask_login import current_user
-from flask_principal import identity_loaded, identity_changed, ActionNeed, Permission, Identity, AnonymousIdentity
+from flask_principal import identity_loaded, identity_changed, ActionNeed, RoleNeed, Permission, Identity, AnonymousIdentity
 from enum import Enum
 
 # Custom roles and actions
