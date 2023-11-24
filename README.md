@@ -48,6 +48,7 @@ pip install Python-dotenv
 pip install email-validator
 pip install flask-principal
 pip install flask_wtf
+pip install sqlalchemyseed
 
 ### Base de dades
 
