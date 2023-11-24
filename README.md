@@ -47,6 +47,7 @@ pip install Flask-Login
 pip install Python-dotenv
 pip install email-validator
 pip install flask-principal
+pip install flask_wtf
 
 ### Base de dades
 

@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, url_for, flash
+from flask import Blueprint, redirect, render_template, url_for, flash, request
 from flask_login import current_user, login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import login_manager
@@ -74,7 +74,7 @@ def register():
             token = secrets.token_urlsafe(20)
 
             # Crear un nuevo usuario en la base de datos con el token y sin verificar
-            new_user = User(name=name, email=email, password=generate_password_hash(password, method="sha256"), role="wanner", email_token=token, verified=False)
+            new_user = User(name=name, email=email, password=generate_password_hash(password, method="pbkdf2:sha256"), role="wanner", email_token=token, verified=False)
             db.session.add(new_user)
             db.session.commit()
 
@@ -86,16 +86,41 @@ def register():
 
     return render_template('register.html', form=form)
 
-@auth_bp.route('/profile')
+@auth_bp.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    # Suposant que 'current_user' és un objecte usuari amb atributs com 'name', 'email', i 'role'
-    user_info = {
-        "name": current_user.name,
-        "email": current_user.email,
-        "role": current_user.role
-    }
-    return render_template('profile.html', user_info=user_info)
+    if request.method == 'POST':
+        new_email = request.form.get('email')
+        new_name = request.form.get('name')
+
+        email_changed = current_user.email != new_email
+
+        if email_changed:
+            # Generar un nou token de verificació
+            new_token = secrets.token_urlsafe(20)
+
+            # Actualitzar l'usuari
+            current_user.email = new_email
+            current_user.email_token = new_token
+            current_user.verified = False
+
+            # Enviar el correu de verificació
+            mail.send_verification_msg(new_name, new_email, new_token)
+
+            flash('Un nou enllaç de verificació ha estat enviat al teu correu electrònic.', 'success')
+
+        # Actualitzar altres dades de l'usuari
+        current_user.name = new_name
+
+        # Guardar els canvis en la base de dades
+        db.session.commit()
+
+        return redirect(url_for('auth_bp.profile'))
+
+    # Si la sol·licitud és GET, mostrar el formulari amb les dades actuals
+    return render_template('profile.html', user_info=current_user)
+
+
 
 @auth_bp.route('/verify/<name>/<email_token>')
 def verify_user(name, email_token):
